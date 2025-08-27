@@ -39,7 +39,7 @@ function App() {
 
   const fetchTeams = async () => {
     try {
-      const response = await fetch('https://yuvasetu-5kqb.vercel.app/api/youth/teams/event/68a71741331cd81f6e0714a0');
+      const response = await fetch('https://mitwpu-sih2025-teams-backend-1.onrender.com/api/proxy/68a71741331cd81f6e0714a0');
       const data = await response.json();
       if (data.success) {
         setTeams(data.teams);
