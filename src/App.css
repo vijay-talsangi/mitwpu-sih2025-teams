@@ -608,7 +608,33 @@ body {
 .btn-decline:hover {
   background: #d8dce0;
 }
+/* Add these styles to your App.css file */
 
+/* Problem Statements Section */
+.problem-statements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.problem-statement-item {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4361ee;
+}
+
+.ps-id {
+  font-weight: 700;
+  color: #4361ee;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.ps-title {
+  color: #495057;
+  line-height: 1.4;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .app {

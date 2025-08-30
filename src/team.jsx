@@ -5,6 +5,7 @@ import './App.css';
 function App() {
   const [teams, setTeams] = useState([]);
   const [filteredTeams, setFilteredTeams] = useState([]);
+  const [problemStatements, setProblemStatements] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,7 @@ function App() {
 
   useEffect(() => {
     fetchTeams();
+    fetchProblemStatements();
   }, []);
 
   useEffect(() => {
@@ -47,6 +49,18 @@ function App() {
       }
     } catch (error) {
       console.error('Error fetching teams:', error);
+    }
+  };
+
+  const fetchProblemStatements = async () => {
+    try {
+      const response = await fetch('https://mitwpu-sih2025-teams-backend-1.onrender.com/api/proxy/ps');
+      const data = await response.json();
+      if (data.success) {
+        setProblemStatements(data.problemStatements);
+      }
+    } catch (error) {
+      console.error('Error fetching problem statements:', error);
     } finally {
       setLoading(false);
     }
@@ -74,7 +88,7 @@ function App() {
   if (selectedTeam) {
     return (
       <div className="app">
-        <TeamDetail team={selectedTeam} onBack={handleBackClick} />
+        <TeamDetail team={selectedTeam} problemStatements={problemStatements} onBack={handleBackClick} />
       </div>
     );
   }
@@ -211,9 +225,14 @@ const TeamCard = ({ team, onClick }) => {
   );
 };
 
-const TeamDetail = ({ team, onBack }) => {
+const TeamDetail = ({ team, problemStatements, onBack }) => {
   const maleCount = team.members.filter(m => m.gender === 'male').length;
   const femaleCount = team.members.filter(m => m.gender === 'female').length;
+  
+  // Find problem statements that this team is registered for
+  const teamProblemStatements = problemStatements.filter(ps => 
+    ps.registeredTeams && ps.registeredTeams.some(rt => rt._id === team._id)
+  );
   
   return (
     <div className="team-detail">
@@ -249,6 +268,24 @@ const TeamDetail = ({ team, onBack }) => {
       </div>
 
       <div className="detail-sections">
+        {/* Problem Statements Section */}
+        {teamProblemStatements.length > 0 && (
+          <div className="detail-section">
+            <h2>
+              <i className="fas fa-tasks"></i>
+              Registered Problem Statements ({teamProblemStatements.length})
+            </h2>
+            <div className="problem-statements-list">
+              {teamProblemStatements.map(ps => (
+                <div key={ps._id} className="problem-statement-item">
+                  <div className="ps-id">{ps.statementId}</div>
+                  <div className="ps-title">{ps.title}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="detail-section">
           <h2>
             <i className="fas fa-crown"></i>
